@@ -544,19 +544,11 @@ class PicoSyncManager:
         # Detect Pico model
         self.detect_pico_model()
         
-        # Check if Pico needs firmware after a delay
-        def check_and_flash():
-            if self.config.get('auto_flash', False):
-                if not self.check_micropython():
-                    self.log("MicroPython not detected, prompting for flash", "WARNING")
-                    if messagebox.askyesno("Flash Firmware?", 
-                                          "MicroPython not detected.\n\n"
-                                          "Flash firmware now?"):
-                        self.flash_firmware()
-                else:
-                    self.log("MicroPython detected", "INFO")
-        
-        self.root.after(1000, check_and_flash)
+        # Check if Pico needs firmware
+        if self.config.get('auto_flash') and not self.check_micropython():
+            if messagebox.askyesno("Flash Firmware?", 
+                                  "MicroPython not detected. Flash firmware now?"):
+                self.flash_firmware()
         
         # Start file watching if auto sync enabled
         if self.auto_sync_enabled.get() and self.dir_var.get():
@@ -607,11 +599,8 @@ class PicoSyncManager:
     def check_micropython(self):
         """Check if MicroPython is installed on Pico"""
         try:
-            mpremote_cmd = 'mpremote' if shutil.which('mpremote') else str(Path.cwd() / 'Scripts' / 'mpremote.exe')
-            result = subprocess.run([mpremote_cmd, 'connect', self.current_port or 'auto', 'ls'],
+            result = subprocess.run(['mpremote', 'connect', 'auto', 'ls'],
                                   capture_output=True, text=True, timeout=5)
-            if result.stderr:
-                self.log(f"MicroPython check stderr: {result.stderr}", "DEBUG")
             return result.returncode == 0
         except:
             return False

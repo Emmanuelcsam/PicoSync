@@ -1,0 +1,11 @@
+--- a/pico_sync_manager.py
++++ b/pico_sync_manager.py
+@@ -651,6 +651,8 @@
+         if not self.dir_var.get():
+             return
+         
++        if not os.path.exists(self.dir_var.get()):
++            return
+         self.stop_file_watching()
+         
+         self.file_observer = Observer()
