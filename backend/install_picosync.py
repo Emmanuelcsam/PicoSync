@@ -128,6 +128,17 @@ class PicoSyncInstaller:
             print(f"Failed to install dependencies: {result.stderr}")
             return False
             
+        # Install pywin32 on Windows for icon support
+        if self.is_windows:
+            print("\n📦 Installing pywin32 for icon support...")
+            cmd_pywin32 = [self.uv_cmd, "pip", "install", "pywin32"]
+            result_pywin32 = subprocess.run(cmd_pywin32, env=env, capture_output=True, text=True)
+            
+            if result_pywin32.returncode != 0:
+                print("⚠️  Failed to install pywin32 (shortcuts will not have icons)")
+            else:
+                print("✅ pywin32 installed successfully!")
+            
         print("✅ Dependencies installed successfully!")
         return True
         
@@ -168,7 +179,7 @@ class PicoSyncInstaller:
                 shortcut = shell.CreateShortCut(str(shortcut_path))
                 shortcut.Targetpath = str(bat_path)
                 shortcut.WorkingDirectory = str(self.base_dir)
-                shortcut.IconLocation = str(self.core_dir / "icon.ico")
+                shortcut.IconLocation = str(self.core_dir / "run.ico")
                 shortcut.save()
                 print(f"✅ Start Menu shortcut created")
             except:
