@@ -1,0 +1,9 @@
+1. For uv environment:
+bashuv pip install mpremote pyserial watchdog
+uv run python pico_sync_manager.py
+2. For system Python:
+bashpy -m ensurepip --upgrade
+py -m pip install mpremote pyserial watchdog
+py pico_sync_manager.py
+3. Or just run directly:
+bashPicoSync_Windows.bat
