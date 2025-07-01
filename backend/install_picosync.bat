@@ -67,7 +67,7 @@ echo Starting installation...
 echo.
 
 :: Run the installer
-"%PYTHON_CMD%" install_picosync.py
+"%PYTHON_CMD%" "%~dp0install_picosync.py"
 
 if !errorlevel! equ 0 (
     echo.

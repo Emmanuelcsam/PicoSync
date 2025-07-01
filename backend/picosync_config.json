@@ -1,0 +1,8 @@
+{
+  "base_dir": "C:\\Users\\Saem1001\\Documents\\GitHub\\PicoSync\\backend",
+  "config_dir": "C:\\Users\\Saem1001\\Documents\\GitHub\\PicoSync\\backend\\config",
+  "core_dir": "C:\\Users\\Saem1001\\Documents\\GitHub\\PicoSync\\backend\\config\\core",
+  "venv_dir": "C:\\Users\\Saem1001\\Documents\\GitHub\\PicoSync\\backend\\pico_venv",
+  "system": "Windows",
+  "uv_cmd": "C:\\Users\\Saem1001\\.local\\bin\\uv.EXE"
+}

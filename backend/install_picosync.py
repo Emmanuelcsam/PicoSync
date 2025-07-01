@@ -88,7 +88,7 @@ class PicoSyncInstaller:
         
     def setup_virtual_environment(self):
         """Create virtual environment using UV"""
-        print("\n🐍 Setting up Python virtual environment...")
+        print("\nSetting up Python virtual environment...")
         
         # Remove old venv if exists
         if self.venv_dir.exists():
@@ -173,17 +173,33 @@ class PicoSyncInstaller:
             with open(bat_path, "w") as f:
                 f.write(f'@echo off\ncd /d "{self.base_dir}"\ncall run_picosync.bat')
                 
+            # Path to the new shortcut script
+            shortcut_script = self.base_dir / "create_shortcut_windows.py"
+            
+            # Python executable in the venv
+            python_executable = self.venv_dir / "Scripts" / "python.exe"
+            
+            # Icon paths
+            run_icon_path = self.core_dir / "run.ico"
+            install_icon_path = self.core_dir / "install.ico"
+            
+            # Command to run
+            cmd = [
+                str(python_executable),
+                str(shortcut_script),
+                str(shortcut_path),
+                str(bat_path),
+                str(self.base_dir),
+                str(run_icon_path),
+                str(install_icon_path)
+            ]
+            
             try:
-                import win32com.client
-                shell = win32com.client.Dispatch("WScript.Shell")
-                shortcut = shell.CreateShortCut(str(shortcut_path))
-                shortcut.Targetpath = str(bat_path)
-                shortcut.WorkingDirectory = str(self.base_dir)
-                shortcut.IconLocation = str(self.core_dir / "run.ico")
-                shortcut.save()
+                result = subprocess.run(cmd, capture_output=True, text=True, check=True)
                 print(f"✅ Start Menu shortcut created")
-            except:
-                print("⚠️  Could not create Start Menu shortcut (install pywin32 for this feature)")
+            except subprocess.CalledProcessError as e:
+                print("Could not create Start Menu shortcut.")
+                print(f"Error: {e.stderr}")
                 
         elif self.is_linux:
             # Create desktop entry
@@ -211,14 +227,14 @@ Categories=Development;IDE;
         if self.is_linux:
             groups = subprocess.getoutput("groups")
             if "dialout" not in groups:
-                print("\n⚠️  USB Permission Warning:")
+                print("\nUSB Permission Warning:")
                 print("You may need to add your user to the 'dialout' group:")
                 print(f"  sudo usermod -a -G dialout {os.getlogin()}")
                 print("Then log out and back in for changes to take effect.")
                 
     def run(self):
         """Run the complete installation"""
-        print("🚀 PicoSync Universal Installer")
+        print("PicoSync Universal Installer")
         print("=" * 40)
         print(f"System: {self.system}")
         print(f"Base Directory: {self.base_dir}")
@@ -229,7 +245,7 @@ Categories=Development;IDE;
                 print("\n❌ Failed to install UV. Please install manually.")
                 return False
                 
-        print(f"\n✅ UV found at: {self.uv_cmd}")
+        print(f"UV found at: {self.uv_cmd}")
         
         # Setup environment
         if not self.setup_virtual_environment():
@@ -249,7 +265,7 @@ Categories=Development;IDE;
         self.check_usb_permissions()
         
         print("\n" + "=" * 40)
-        print("✅ Installation Complete!")
+        print("Installation Complete!")
         print("\nTo run PicoSync:")
         if self.is_windows:
             print("  - Double-click run_picosync.bat")

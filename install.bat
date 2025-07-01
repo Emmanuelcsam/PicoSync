@@ -1,10 +1,40 @@
 @echo off
-REM Universal installation shortcut for PicoSync
-REM References icon from backend\config\core\install.ico
+REM ────────────────────────────────────────────────────────────────
+REM 1) Elevation: restart as Admin if needed
+net session >nul 2>&1 || (
+  echo ⚠️ Relaunching as administrator…
+  powershell -NoProfile -Command "Start-Process '%~f0' -Verb RunAs"
+  exit /b
+)
 
-REM Get the directory of this script
-set SCRIPT_DIR=%~dp0
+REM 2) Define source & install target
+set "SRC=%~dp0"
+set "DST=%ProgramFiles%\PicoSync"
 
-REM Run the installation script from backend
-cd /d "%SCRIPT_DIR%backend"
-call install_picosync.bat
+REM 3) Make sure install folder exists
+if not exist "%DST%" mkdir "%DST%"
+
+REM 4) Copy EVERYTHING (including app.ico)
+xcopy "%SRC%*" "%DST%\" /E /I /Y >nul
+
+REM 5) Confirm icon got copied
+set "ICON=%DST%\backend\config\core\app.ico"
+if not exist "%ICON%" (
+  echo ❌ Icon not found at "%ICON%"
+  pause
+  exit /b
+)
+
+REM 6) Create desktop shortcut with icon index “,0”
+set "LNK=%USERPROFILE%\Desktop\PicoSync.lnk"
+powershell -NoProfile -Command ^
+  "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('%LNK%');" ^
+  "$s.TargetPath='%DST%\run.bat';" ^
+  "$s.WorkingDirectory='%DST%';" ^
+  "$s.IconLocation='%ICON%,0';" ^
+  "$s.Save();"
+
+echo.
+echo ✅ Installed to: %DST%
+echo ✅ Shortcut: %LNK%  (icon: %ICON%,0)
+pause
