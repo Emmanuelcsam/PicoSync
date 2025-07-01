@@ -1,3 +1,0 @@
-mpremote
-pyserial
-watchdog
