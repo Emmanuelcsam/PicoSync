@@ -40,14 +40,6 @@ pico/
 └── pico_venv/             # Virtual environment (created by installer)
 ```
 
-## Features
-
-- **No hardcoded paths** - Works on any computer
-- **Automatic Python detection** - Finds Python installation
-- **UV package manager** - Fast, reliable dependency management
-- **Virtual environment** - Isolated dependencies
-- **Cross-platform** - Same process for Windows and Linux
-
 ## Transferring to Another Computer
 
 1. Copy the entire `pico` folder
