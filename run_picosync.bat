@@ -6,6 +6,12 @@ setlocal enabledelayedexpansion
 
 title PicoSync
 
+:: Set icon for this batch file
+powershell -Command "& {$shell = New-Object -ComObject Shell.Application; $folder = $shell.Namespace('%~dp0backend\config\core'); $file = $folder.ParseName('run.ico'); $shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut('%~f0.lnk'); $shortcut.IconLocation = $file.Path; $shortcut.Save(); Remove-Item '%~f0.lnk' -Force}" >nul 2>&1
+
+:: Create shortcut with embedded icon for better File Explorer display
+powershell -Command "& {$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%~dp0PicoSync_Run.lnk'); $Shortcut.TargetPath = '%~f0'; $Shortcut.IconLocation = '%~dp0backend\config\core\run.ico'; $Shortcut.Save()}" >nul 2>&1
+
 :: Check if config exists
 if not exist "backend\picosync_config.json" (
     echo ERROR: PicoSync is not installed!
